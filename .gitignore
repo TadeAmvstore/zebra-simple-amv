@@ -1,0 +1,6 @@
+impresoras.json
+servidor.json
+__pycache__/
+*.pyc
+*.nuevo
+.venv/
