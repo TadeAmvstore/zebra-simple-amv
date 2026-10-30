@@ -1,0 +1,35 @@
+name: Publicar Zebra Simple AMV
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verificar archivos
+        run: |
+          test -f app.py
+          test -f index.html
+          test -f actualizar.py
+          test -f INICIAR.bat
+          test -f VERSION
+          test -f amv_logo.png
+      - name: Empaquetar
+        run: |
+          python - <<'PY'
+          import hashlib, pathlib, zipfile
+          files=['app.py','index.html','actualizar.py','INICIAR.bat','ACTUALIZAR.bat','VERSION','amv_logo.png','README.md','LEEME.txt']
+          with zipfile.ZipFile('zebra-simple-amv.zip','w',zipfile.ZIP_DEFLATED) as z:
+              for file in files:
+                  if pathlib.Path(file).exists():z.write(file)
+          sha=hashlib.sha256(pathlib.Path('zebra-simple-amv.zip').read_bytes()).hexdigest()
+          pathlib.Path('zebra-simple-amv.zip.sha256').write_text(sha+'  zebra-simple-amv.zip\n')
+          PY
+      - name: Crear release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(cat VERSION)
+          gh release create "v$version" zebra-simple-amv.zip zebra-simple-amv.zip.sha256 --title "Zebra Simple AMV v$version" --notes "Actualización automática"
