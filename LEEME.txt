@@ -1,0 +1,22 @@
+Zebra Simple AMV 1.0.4
+
+1. Instalar Python 3.13 de 64 bits con Python Launcher.
+2. Extraer el ZIP completo en una carpeta permanente.
+3. Ejecutar INICIAR.bat (instala dependencias si es necesario).
+4. Seleccionar PDF/imagen, impresora, dimensiones y copias. Imprimir.
+
+IPs predeterminadas:
+Zebra 1: 192.168.98.104
+Zebra 2: 192.168.98.15
+Zebra 3: 192.168.98.14
+Zebra 4: 192.168.98.161
+
+Las configuraciones previamente guardadas en %%LOCALAPPDATA%%\ZebraSimpleAMV\impresoras.json no se reemplazan con nuevas predeterminadas. Si ya habias guardado una configuracion, cambia Zebra 2 y 3 manualmente desde la interfaz.
+
+Al abrir, se consulta GitHub Releases para actualizaciones. No funciona hasta que se publique un release con los dos archivos zebra-simple-amv.zip y zebra-simple-amv.zip.sha256.
+
+Versión 1.1.0 de PRUEBA: impresión por tandas de hasta 10 PDF. No reemplazar instalaciones estables sin probar.
+
+Versión 1.1.1: vista previa por PDF y por página en el modo tandas.
+
+Version 1.2.0: tema oscuro e interfaz Impresion Web. Impresion sin cambios.

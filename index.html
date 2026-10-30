@@ -1,0 +1,146 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AMV · Impresión Web</title><link rel="icon" type="image/svg+xml" href="/favicon.svg"><style>
+*{box-sizing:border-box}body{margin:0;font:14px Arial,sans-serif;background:#eef1f4;color:#262a2e}.app{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 76px)}aside{padding:20px;background:white;border-right:1px solid #ddd}h1{font-size:21px;margin:0 0 18px}h2{font-size:14px;border-bottom:1px solid #ddd;padding-bottom:7px;margin-top:22px}label{display:block;font-size:12px;font-weight:bold;margin:12px 0 5px}input,select,button{font:14px Arial}input[type=file]{width:100%;padding:12px;border:1px dashed #aaa;border-radius:5px}input[type=number],input[type=text],select{width:100%;padding:9px;border:1px solid #c7cbd0;border-radius:5px}input[type=range]{width:100%;accent-color:#ee3c55}.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;margin:8px 0;width:100%}.pair input{width:100%;min-width:0;box-sizing:border-box}.settings{margin-top:10px;border:1px solid #dfe3e7;border-radius:6px;padding:10px;background:#fafbfc}.settings summary{cursor:pointer;font-weight:bold;font-size:12px;padding:4px}.settings[open] summary{margin-bottom:10px}button{padding:10px;border:0;border-radius:5px;cursor:pointer;background:#eceff1}.print{width:100%;background:#0868ee;color:white;font-weight:bold;margin-top:18px;padding:14px}.hint{color:#777;font-size:12px;margin-top:7px}#status{white-space:pre-wrap;margin-top:10px;font-size:12px}main{display:flex;flex-direction:column;min-width:0}.bar{padding:16px 22px;background:#343a40;color:white;font-weight:bold}.area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}#paper{background:white;box-shadow:0 2px 18px #0003;border:1px dashed #aaa;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}#art{display:block;max-width:none;max-height:none}.empty{color:#888;text-align:center;padding:25px}@media(max-width:760px){.app{grid-template-columns:1fr}.area{min-height:55vh}}
+.brandbar{height:76px;background:#252b32;color:white;display:flex;align-items:center;justify-content:space-between;padding:10px 26px;gap:18px}
+.brandleft,.brandright{display:flex;align-items:center;gap:20px}.brandlogo{width:155px;height:54px;object-fit:contain}
+.branddivider{height:38px;border-left:1px solid #68717c}.brandtitle{font-size:20px;font-weight:700;white-space:nowrap}
+.globe{font-size:28px;vertical-align:middle;margin-right:7px}.connection{color:#70e4a2;font-size:12px}.version{color:#bec4cb;font-size:12px}
+aside{overflow-x:hidden}main{min-width:0}.area{background:#e9edf1}.bar{background:#303841}
+@media(max-width:760px){.brandbar{padding:10px 14px}.brandlogo{width:100px}.brandtitle{font-size:14px}.brandright{display:none}.branddivider{height:24px}}
+
+/* V3.1: panel lateral contenido dentro de la altura de la ventana.
+   Los controles se desplazan internamente si el monitor es pequeño,
+   pero IMPRIMIR queda siempre visible. */
+html,body{height:100%;overflow:hidden}
+.app{height:calc(100dvh - 76px);min-height:0}
+.app>aside{display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:0}
+.sidebar-scroll{min-height:0;overflow-y:auto;overflow-x:hidden;flex:1;padding:12px 16px 8px;scrollbar-width:thin}
+.sidebar-footer{flex:none;padding:9px 16px 10px;border-top:1px solid #e3e6ea;background:#fff;box-shadow:0 -3px 10px #0000000b}
+.sidebar-footer .print{margin:0;padding:12px}
+.sidebar-footer .hint{margin:5px 0 0;font-size:10px}
+.sidebar-footer #status:empty{display:none}
+.sidebar-scroll h1{font-size:19px;margin:0 0 9px}
+.sidebar-scroll h2{margin:12px 0 7px}
+.sidebar-scroll label{margin:8px 0 4px;font-size:11px}
+.sidebar-scroll input[type=file]{padding:8px}
+.sidebar-scroll input[type=number],.sidebar-scroll input[type=text],.sidebar-scroll select{padding:7px}
+.sidebar-scroll button{padding:8px}
+.sidebar-scroll .settings{padding:7px;margin-top:7px}
+.sidebar-scroll .hint{margin-top:4px}
+.app>main{min-height:0}
+@media(max-width:760px){
+ html,body{height:auto;overflow:auto}
+ .app{height:auto;min-height:calc(100dvh - 76px);grid-template-columns:1fr}
+ .app>aside{max-height:75dvh}
+ .app>main{min-height:55vh}
+}
+
+.mode-tabs{display:flex;gap:6px;margin:10px 0}.mode-tabs button{flex:1;border:1px solid #d5dce3;font-weight:bold;font-size:12px}.mode-tabs button.active{background:#0868ee;color:#fff;border-color:#0868ee}
+#batchpanel{display:none}.batch-list{list-style:none;padding:0;margin:8px 0;max-height:180px;overflow:auto}.batch-list li{padding:6px 4px;border-bottom:1px solid #e2e6e9;font-size:12px;display:flex;justify-content:space-between;gap:8px}.batch-list li span{overflow-wrap:anywhere}.batch-summary{padding:9px;border-radius:5px;background:#edf5ff;font-size:12px}.batch-error{color:#b12626}
+
+/* Impresión Web 1.2.0 — tema oscuro, sin modificar la lógica de impresión */
+:root{color-scheme:dark;--bg:#0b141a;--panel:#111e26;--panel2:#182832;--line:#304550;--muted:#a6bac3;--accent:#08cba9;--text:#f2f7f8}
+body{background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+.brandbar{height:76px;background:#0a141b;border-bottom:1px solid #293b45;padding:10px 28px}
+.branddivider{border-color:#3a505d}.brandtitle{font-size:22px}.globe{color:var(--accent)}
+.connection{color:#12ddb0}.version{color:#b5c6cd}
+.app{height:calc(100dvh - 76px);grid-template-columns: minmax(325px,355px) minmax(0,1fr);gap:12px;padding:12px;background:#0c161c}
+.app>aside{border:1px solid #273d47;border-radius:12px;background:var(--panel)}
+.sidebar-scroll{padding:17px 17px 12px;scrollbar-color:#58717d transparent}
+.sidebar-footer{background:#101f27;border-top:1px solid #2b424d;padding:12px 16px}
+.sidebar-scroll h1{font-size:21px;margin-bottom:10px}
+.sidebar-scroll h2{color:#e7f2f4;border-color:#2b424d}
+.sidebar-scroll label{color:#d6e7ec}
+.hint{color:var(--muted)}
+button{background:#22343e;color:#f3fafb;border:1px solid #354b56;border-radius:7px;transition:background .12s,border-color .12s}
+button:hover:not(:disabled){background:#2b4450;border-color:#5b7783}
+button:disabled{opacity:.55;cursor:not-allowed}
+.mode-tabs{gap:8px;margin:15px 0}
+.mode-tabs button{border:1px solid #304650;background:#253843;color:#f0f7f9;padding:12px 5px}
+.mode-tabs button.active{background:var(--accent);border-color:var(--accent);color:#062620}
+input[type=file]{background:#132630;border:1px dashed #47717a;border-radius:9px;color:#c7e1e5;min-height:60px}
+input[type=file]::file-selector-button{background:#21414b;color:#dff8f5;border:1px solid #46717a;border-radius:6px;padding:8px;margin-right:9px;cursor:pointer}
+input[type=number],input[type=text],select{background:#10222c;color:#f4fafb;border:1px solid #44616d;border-radius:7px}
+input[type=range]{accent-color:var(--accent)}
+.settings{background:#122832;border-color:#38545e;border-radius:8px}
+.settings summary{color:#dff8f4}
+.batch-list{max-height:190px;scrollbar-color:#577580 transparent}
+.batch-list li{border-bottom:1px solid #293f49;padding:7px 5px;color:#e0edf0}
+.batch-list li:hover{background:#223842}
+.batch-summary{background:#183844;color:#d9f4f4;border:1px solid #2d515c}
+.batch-error{color:#ff8b8b}
+.print,.sidebar-footer .print{background:var(--accent);border:1px solid #11d4b5;color:#07241f;border-radius:8px;font-size:15px;font-weight:800;padding:14px}
+.print:hover:not(:disabled){background:#32e3c3}
+#status{color:#bdebe2;line-height:1.45}
+.app>main{border:1px solid #2c414c;border-radius:12px;overflow:hidden;background:#15232c}
+.bar{padding:18px 22px;background:#172730;color:#f6fbfc;font-size:15px;border-bottom:1px solid #2a414b}
+.area{background:radial-gradient(circle at center,#283b46 0%,#1a2b35 64%,#15232c 100%);padding:24px}
+#paper{background:#fff;border:1px solid #d7dfe1;box-shadow:0 10px 32px #0006;border-radius:3px}
+.empty{color:#607580}
+@media(max-width:760px){
+ html,body{height:auto;overflow:auto}
+ .app{grid-template-columns:1fr;height:auto;gap:10px;padding:10px}
+ .app>aside{max-height:75dvh}
+ .app>main{min-height:55vh}
+ .brandbar{padding:10px 14px}
+}
+
+</style></head><body>
+<header class="brandbar">
+ <div class="brandleft"><img class="brandlogo" src="/amv_logo.png" alt="AMV Electro & Bazar"><span class="branddivider"></span><span class="brandtitle"><span class="globe">◎</span> Impresión Web</span></div>
+ <div class="brandright"><span class="connection">● Aplicación local</span><span class="version">v1.2.0</span></div>
+</header>
+<div class="app"><aside><div class="sidebar-scroll"><h1>🖨️ Impresión Web</h1><div class="hint">Versión 1.2.0 · <button id="checkupdate" type="button">Buscar actualizaciones</button></div><div class="mode-tabs"><button id="mode-single" class="active" type="button">Individual</button><button id="mode-batch" type="button">Por tandas (10 PDF)</button></div><div id="singlepanel"><label>ARCHIVO PDF O IMAGEN</label><input id="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.bmp,.webp"><div id="filename" class="hint">PDF, JPG o PNG</div><div id="pdf" style="display:none"><label>PÁGINA DEL PDF</label><div class="row"><button id="prev">◀ Anterior</button><button id="next">Siguiente ▶</button></div><div id="pageinfo" class="hint"></div></div></div><div id="batchpanel"><label>ARCHIVOS PDF (MÁXIMO 10)</label><input id="batchfiles" type="file" accept=".pdf,application/pdf" multiple><div class="hint">Cada página se envía completa, incluidas las etiquetas dobles.</div><ul id="batchlist" class="batch-list"></ul><div id="batchsummary" class="batch-summary">No hay archivos seleccionados.</div><div id="batchnav" style="display:none;margin-top:10px"><label>VISTA PREVIA DE CADA ETIQUETA</label><div class="row"><button id="batchprev" type="button">◀ Anterior</button><button id="batchnext" type="button">Siguiente ▶</button></div><div id="batchpageinfo" class="hint" style="margin-top:7px;overflow-wrap:anywhere"></div></div></div><h2>Impresora</h2><label>ELEGIR IMPRESORA</label><select id="printer"></select><details class="settings"><summary>⚙ Configurar impresoras</summary><div class="hint">Editá los nombres y las IP cuando lo necesites.</div><div id="printerfields"></div><button id="save" style="width:100%">Guardar impresoras</button></details><h2>Etiqueta</h2><div class="row"><div><label>ANCHO (mm)</label><input id="w" type="number" value="100" min="10" max="200"></div><div><label>ALTO (mm)</label><input id="h" type="number" value="150" min="10" max="300"></div></div><h2>Contenido</h2><label>TAMAÑO DE LA IMAGEN / PDF: <span id="scalevalue">100%</span></label><input id="scale" type="range" min="10" max="200" value="100"><label>GIRAR</label><div class="row"><button id="left">↶ Izquierda</button><button id="right">Derecha ↷</button></div><label>COPIAS</label><input id="copies" type="number" min="1" max="999" value="1"></div><div class="sidebar-footer"><button id="print" class="print">IMPRIMIR</button><div id="status"></div><p class="hint">Zebra ZPL · 203 dpi · Puerto 9100</p></div></aside><main><div class="bar">VISTA PREVIA DE LA ETIQUETA</div><div class="area"><div id="paper"><div class="empty">Cargá un PDF o una imagen<br>para ver la etiqueta</div></div></div></main></div><script>
+const $=x=>document.getElementById(x);let file=null,page=0,pages=1,rotation=0,printers=[],imgUrl=null,previewImage=null;const status=t=>$('status').textContent=t;
+async function load(){printers=await(await fetch('/api/printers')).json();render()}
+function render(){let sel=$('printer').value;$('printer').innerHTML='';$('printerfields').innerHTML='';printers.forEach((p,i)=>{let o=document.createElement('option');o.value=i;o.textContent=(p.name||`Zebra ${i+1}`)+' — '+(p.ip||'sin IP');$('printer').append(o);let row=document.createElement('div');row.className='pair';let n=document.createElement('input'),ip=document.createElement('input');n.value=p.name;n.placeholder='Nombre';ip.value=p.ip;ip.placeholder='Dirección IP';n.oninput=()=>p.name=n.value;ip.oninput=()=>p.ip=ip.value;row.append(n,ip);$('printerfields').append(row)});if(sel)$('printer').value=sel}
+$('save').onclick=async()=>{let r=await fetch('/api/printers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(printers)});status(await r.text());if(r.ok)render()};
+function size(){let w=+$('w').value||100,h=+$('h').value||150,k=Math.min(700/w,610/h,5);$('paper').style.width=w*k+'px';$('paper').style.height=h*k+'px';draw()}
+function draw(){if(!previewImage)return;let p=$('paper'),im=previewImage,rot=rotation%180!==0;let iw=rot?im.naturalHeight:im.naturalWidth,ih=rot?im.naturalWidth:im.naturalHeight;let factor=Math.min(p.clientWidth/iw,p.clientHeight/ih)*(+$('scale').value/100);im.style.width=im.naturalWidth*factor+'px';im.style.height=im.naturalHeight*factor+'px';im.style.transform=`rotate(${rotation}deg)`;$('scalevalue').textContent=$('scale').value+'%'}
+async function show(){if(!file)return;let f=new FormData();f.append('file',file);f.append('page',page);let r=await fetch('/api/preview',{method:'POST',body:f});if(!r.ok){status(await r.text());return}if(imgUrl)URL.revokeObjectURL(imgUrl);imgUrl=URL.createObjectURL(await r.blob());let im=new Image();im.onload=()=>{previewImage=im;im.id='art';$('paper').replaceChildren(im);draw()};im.src=imgUrl}
+$('file').onchange=async()=>{file=$('file').files[0];if(!file)return;page=0;rotation=0;$('filename').textContent=file.name;let f=new FormData();f.append('file',file);let r=await fetch('/api/info',{method:'POST',body:f});if(!r.ok){status(await r.text());return}let d=await r.json();pages=d.pages;$('pdf').style.display=d.pdf?'block':'none';pageText();await show()};function pageText(){$('pageinfo').textContent=`Página ${page+1} de ${pages}`}
+$('prev').onclick=()=>{page=Math.max(0,page-1);pageText();show()};$('next').onclick=()=>{page=Math.min(pages-1,page+1);pageText();show()};$('scale').oninput=draw;$('w').oninput=size;$('h').oninput=size;$('left').onclick=()=>{rotation=(rotation+270)%360;draw()};$('right').onclick=()=>{rotation=(rotation+90)%360;draw()};
+$('print').onclick=async()=>{if(batchMode){await printBatch();return}if(!file){status('Primero cargá un archivo.');return}let p=printers[+$('printer').value];if(!p?.ip){status('Configurá la IP de la impresora y guardala.');return}let f=new FormData();f.append('file',file);for(let [k,v] of Object.entries({page,width:$('w').value,height:$('h').value,scale:$('scale').value,rotation,copies:$('copies').value,ip:p.ip}))f.append(k,v);status('Enviando...');let r=await fetch('/api/print',{method:'POST',body:f});status(await r.text())};let batchMode=false,batchFiles=[],batchPages=0,batchCounts=[],batchIndex=0,batchPage=0,batchPreviewToken=0;
+function switchMode(batch){batchMode=batch;$('mode-single').classList.toggle('active',!batch);$('mode-batch').classList.toggle('active',batch);$('singlepanel').style.display=batch?'none':'block';$('batchpanel').style.display=batch?'block':'none';$('print').textContent=batch?'IMPRIMIR TANDA':'IMPRIMIR';$('paper').replaceChildren();previewImage=null;if(!batch){batchPreviewToken++;show();}else{if(batchCounts.length){showBatchPreview()}else{$('paper').innerHTML='<div class="empty">Tanda de hasta 10 PDF<br>Seleccioná los archivos para ver el resumen</div>';}}status('')}
+$('mode-single').onclick=()=>switchMode(false);$('mode-batch').onclick=()=>switchMode(true);
+$('batchfiles').onchange=async()=>{
+ batchFiles=Array.from($('batchfiles').files);batchPages=0;batchCounts=[];batchIndex=0;batchPage=0;batchPreviewToken++;$('batchnav').style.display='none';$('batchlist').replaceChildren();
+ if(batchFiles.length>10){status('Máximo 10 PDF por tanda.');batchFiles=[];$('batchfiles').value='';return}
+ if(!batchFiles.length){$('batchsummary').textContent='No hay archivos seleccionados.';return}
+ let fd=new FormData();batchFiles.forEach(f=>fd.append('files',f));status('Revisando archivos...');
+ try{let r=await fetch('/api/batch/info',{method:'POST',body:fd});if(!r.ok)throw Error(await r.text());let data=await r.json();batchPages=data.total_pages;batchCounts=data.files.map(f=>f.pages);
+  data.files.forEach((f,i)=>{let li=document.createElement('li');let name=document.createElement('span');name.textContent=`${i+1}. ${f.name}`;let count=document.createElement('strong');count.textContent=`${f.pages} pág.`;li.append(name,count);li.style.cursor='pointer';li.title='Ver este PDF';li.onclick=()=>{batchIndex=i;batchPage=0;showBatchPreview()};$('batchlist').append(li)});
+  $('batchsummary').textContent=`${batchFiles.length} PDF · ${batchPages} páginas · ${batchPages*(+$('copies').value||1)} impresiones con las copias elegidas`;
+  $('batchnav').style.display='block';await showBatchPreview();status('Tanda lista para enviar. Revisá cada etiqueta antes de imprimir.');
+ }catch(e){batchFiles=[];batchPages=0;batchCounts=[];$('batchnav').style.display='none';$('batchfiles').value='';$('batchsummary').textContent='No se pudieron validar los PDF.';status('Error: '+e.message)}
+};
+async function showBatchPreview(){
+ if(!batchMode||!batchFiles[batchIndex]||!batchCounts[batchIndex])return;
+ const token=++batchPreviewToken;
+ const f=new FormData();f.append('file',batchFiles[batchIndex]);f.append('page',batchPage);
+ $('batchpageinfo').textContent=`PDF ${batchIndex+1} de ${batchFiles.length} · Página ${batchPage+1} de ${batchCounts[batchIndex]} · ${batchFiles[batchIndex].name}`;
+ $('batchprev').disabled=batchIndex===0&&batchPage===0;
+ $('batchnext').disabled=batchIndex===batchFiles.length-1&&batchPage===batchCounts[batchIndex]-1;
+ $('paper').innerHTML='<div class="empty">Cargando vista previa...</div>';previewImage=null;
+ try{
+  const r=await fetch('/api/preview',{method:'POST',body:f});if(!r.ok)throw Error(await r.text());
+  const blob=await r.blob();if(token!==batchPreviewToken||!batchMode)return;
+  const url=URL.createObjectURL(blob);const im=new Image();
+  im.onload=()=>{if(token!==batchPreviewToken||!batchMode){URL.revokeObjectURL(url);return}if(imgUrl)URL.revokeObjectURL(imgUrl);imgUrl=url;previewImage=im;im.id='art';$('paper').replaceChildren(im);draw()};
+  im.onerror=()=>{URL.revokeObjectURL(url);if(token===batchPreviewToken)status('No se pudo mostrar la vista previa.')};im.src=url;
+ }catch(e){if(token===batchPreviewToken){$('paper').textContent='Error al mostrar la etiqueta';status('Vista previa: '+e.message)}}
+}
+$('batchprev').onclick=()=>{if(batchPage>0)batchPage--;else if(batchIndex>0){batchIndex--;batchPage=batchCounts[batchIndex]-1}showBatchPreview()};
+$('batchnext').onclick=()=>{if(batchPage+1<batchCounts[batchIndex])batchPage++;else if(batchIndex+1<batchFiles.length){batchIndex++;batchPage=0}showBatchPreview()};
+async function printBatch(){
+ if(!batchFiles.length||!batchPages){status('Primero seleccioná los PDF.');return}
+ let p=printers[+$('printer').value];if(!p?.ip){status('Configurá la IP de la Zebra.');return}
+ if(!confirm(`¿Enviar ${batchPages} páginas de ${batchFiles.length} PDF a ${p.name}?`))return;
+ let fd=new FormData();batchFiles.forEach(f=>fd.append('files',f));
+ for(let [k,v] of Object.entries({width:$('w').value,height:$('h').value,scale:$('scale').value,rotation,copies:$('copies').value,ip:p.ip}))fd.append(k,v);
+ $('print').disabled=true;status('Enviando tanda... Esperá a que termine.');
+ try{let r=await fetch('/api/batch/print',{method:'POST',body:fd});let data=await r.json();if(!r.ok)throw Error(data.error||'No se pudo imprimir');status(data.message+' Verificá la salida física de la impresora.');}
+ catch(e){status('Error: '+e.message)}finally{$('print').disabled=false}
+}
+$('copies').addEventListener('input',()=>{if(batchMode&&batchPages)$('batchsummary').textContent=`${batchFiles.length} PDF · ${batchPages} páginas · ${batchPages*(+$('copies').value||1)} impresiones con las copias elegidas`});
+$('checkupdate').onclick=async()=>{status('Comprobando versión...');try{let r=await fetch('/api/version');let d=await r.json();status('Versión instalada: '+d.version+'. Para comprobar e instalar actualizaciones, cerrá esta ventana y ejecutá ACTUALIZAR.bat.')}catch(e){status('No se pudo consultar la versión.')}};window.onresize=size;load();size();
+</script></body></html>
